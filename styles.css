@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body, html {
+    height: 100%;
+    font-family: 'Acumin Pro', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('background.svg') no-repeat center center/cover;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    position: relative;
+    flex-grow: 1;
+  }
+  
+  .message-box {
+    background-color: rgba(255, 255, 255, 1.6);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .message-box p {
+    font-size: 27px;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .city-box {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .action-button {
+    background-color: #fff;
+    color: black;
+    font-size: 20px; /* Crește dimensiunea fontului */
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 25px;
+    padding: 10px 40px; /* Crește paddingul pentru un buton mai mare */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+  }
+  
+  .action-button:hover {
+    background-color: black;
+    color: white;
+    transition: 0.3s;
+  }
+  
+  /* Modal styling */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4b4b;
+    color: white;
+    border: none;a/* Stiluri globale */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body, html {
+      height: 100%;
+      font-family: 'Acumin Pro', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+    
+    /* Stiluri pentru container */
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+    
+    /* Stiluri pentru mesajul lung */
+    .message-box {
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+      max-width: 90%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      font-size: 18px;
+      font-weight: normal;
+      text-align: center;
+      max-height: 200px; /* Ajustează în funcție de nevoi */
+      overflow-y: auto;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #ff4b4b;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+
+.loading-circle {
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 8px solid black;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
