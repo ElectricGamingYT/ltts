@@ -65,21 +65,28 @@
   .action-button {
     background-color: #fff;
     color: black;
-    font-size: 20px; /* Crește dimensiunea fontului */
+    font-size: 20px;
     font-weight: bold;
     border: 2px solid black;
     border-radius: 25px;
-    padding: 10px 40px; /* Crește paddingul pentru un buton mai mare */
+    padding: 10px 40px;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: 10px;
+    width: 250px; /* Dimensiune fixă pe orizontală */
+    height: auto; /* Ajustare automată a înălțimii în funcție de text */
+    text-align: center;
+    white-space: normal; /* Permite împărțirea pe linii multiple */
+    line-height: 1.2; /* Ajustarea spațierii dintre rânduri */
   }
-  
+
+
   .action-button:hover {
     background-color: black;
     color: white;
     transition: 0.3s;
   }
+
   
   /* Modal styling */
   .modal {

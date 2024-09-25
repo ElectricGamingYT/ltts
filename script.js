@@ -1,34 +1,39 @@
 const modal = document.getElementById('myModal');
 const openModalBtn = document.getElementById('btn-verifica');
-const whereAmIBtn = document.getElementById('btn-unde-aflu');
+const whereAmIBtn = document.getElementById('btn-mai-multe');
+const startGameBtn = document.getElementById('btn-incepe-jocul');
 const closeModalBtn = document.getElementById('closeModal');
 const cityBox = document.getElementById('city-box');
 const content = document.getElementById('content');
 const loadingCircle = document.getElementById('loading-circle');
-const blurOverlay = document.createElement('div');
 
-// Eveniment pentru butonul "Unde mă aflu"
+// Eveniment pentru butonul "Vreau să știu mai multe despre unde sunt"
 whereAmIBtn.addEventListener('click', function() {
-  whereAmIBtn.style.display = 'none'; // Ascunde butonul "Unde mă aflu"
+  whereAmIBtn.style.display = 'none'; // Ascunde butonul "Vreau să știu mai multe"
+  startGameBtn.style.display = 'none'; // Ascunde butonul "Vreau să încep jocul"
   loadingCircle.style.display = 'block'; // Arată cercul de încărcare
 
   // Folosire IPinfo pentru a obține locația utilizatorului prin IP
-  fetch('https://ipinfo.io?token=0fcee6375a1282') // Înlocuiește YOUR_API_TOKEN cu cheia ta API
+  fetch('https://ipinfo.io?token=0fcee6375a1282') // Înlocuiește cu cheia ta API
     .then(response => response.json())
     .then(data => {
-      const userCity = data.city; // Obține numele orașului din răspunsul IPinfo
-      console.log("Oraș detectat de IPinfo: ", userCity); // Log pentru a verifica orașul detectat
+      const userCity = data.city;
+      console.log("Oraș detectat de IPinfo: ", userCity);
       showCity(userCity);
     })
     .catch(error => {
       console.error('Eroare la obținerea locației:', error);
       cityBox.textContent = "Eroare la obținerea locației.";
       cityBox.style.display = 'block';
-      loadingCircle.style.display = 'none'; // Ascunde cercul de încărcare
+      loadingCircle.style.display = 'none';
     });
 });
 
-// Eveniment pentru butonul "Vreau să știu mai mult"
+// Eveniment pentru butonul "Vreau să încep jocul"
+startGameBtn.addEventListener('click', function() {
+  alert("Funcția de joc nu este implementată încă!");
+});
+
 openModalBtn.addEventListener('click', function() {
   modal.style.display = 'flex';
 });
@@ -50,8 +55,6 @@ function showCity(userCity) {
   ];
 
   let foundCity = false;
-
-  // Normalizează textul pentru a elimina diferențele de capitalizare și diacritice
   const normalizedUserCity = normalizeText(userCity);
 
   for (const oras of orase) {
@@ -59,9 +62,9 @@ function showCity(userCity) {
     
     if (normalizedCityName === normalizedUserCity) {
       cityBox.textContent = "Te afli în orașul: " + oras.nume;
-      cityBox.style.display = 'block'; // Arată textul orașului
+      cityBox.style.display = 'block';
       content.textContent = oras.mesaj;
-      openModalBtn.style.display = 'inline-block'; // Activează butonul "Vreau să știu mai mult"
+      openModalBtn.style.display = 'inline-block';
       foundCity = true;
       break;
     }
@@ -69,16 +72,16 @@ function showCity(userCity) {
 
   if (!foundCity) {
     cityBox.textContent = "Te afli într-o locație necunoscută.";
-    cityBox.style.display = 'block'; // Arată textul orașului chiar și atunci când nu este găsit niciun oraș
-    openModalBtn.style.display = 'none'; // Ascunde butonul "Vreau să știu mai mult" dacă nu e oraș recunoscut
+    cityBox.style.display = 'block';
+    openModalBtn.style.display = 'none';
   }
 
-  loadingCircle.style.display = 'none'; // Ascunde cercul de încărcare
+  loadingCircle.style.display = 'none';
 }
 
 function normalizeText(text) {
   return text
     .toLowerCase()
-    .normalize('NFD') // Normalizează și elimină diacriticele
-    .replace(/[\u0300-\u036f]/g, ""); // Șterge diacriticele
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, "");
 }
