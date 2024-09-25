@@ -13,7 +13,42 @@ whereAmIBtn.addEventListener('click', function() {
   startGameBtn.style.display = 'none'; // Ascunde butonul "Vreau să încep jocul"
   loadingCircle.style.display = 'block'; // Arată cercul de încărcare
 
-  // Folosire IPinfo pentru a obține locația utilizatorului prin IP
+  if (navigator.geolocation) {
+    // Folosim Geolocation API pentru locația exactă
+    navigator.geolocation.getCurrentPosition(success, error);
+  } else {
+    // În cazul în care Geolocation API nu este suportat
+    alert('Geolocation nu este suportat de acest browser.');
+    getIpLocation(); // fallback to IP location
+  }
+});
+
+function success(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+
+  // Reverse geocoding to get the city based on lat and lon
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(response => response.json())
+    .then(data => {
+      const userCity = data.address.city || data.address.town || data.address.village;
+      console.log("Oraș detectat prin GPS: ", userCity);
+      showCity(userCity);
+    })
+    .catch(error => {
+      console.error('Eroare la geocodificare inversă:', error);
+      cityBox.textContent = "Eroare la obținerea locației.";
+      cityBox.style.display = 'block';
+      loadingCircle.style.display = 'none';
+    });
+}
+
+function error() {
+  console.error('Eroare la obținerea locației precise');
+  getIpLocation(); // fallback to IP location
+}
+
+function getIpLocation() {
   fetch('https://ipinfo.io?token=0fcee6375a1282') // Înlocuiește cu cheia ta API
     .then(response => response.json())
     .then(data => {
@@ -27,26 +62,7 @@ whereAmIBtn.addEventListener('click', function() {
       cityBox.style.display = 'block';
       loadingCircle.style.display = 'none';
     });
-});
-
-// Eveniment pentru butonul "Vreau să încep jocul"
-startGameBtn.addEventListener('click', function() {
-  alert("Funcția de joc nu este implementată încă!");
-});
-
-openModalBtn.addEventListener('click', function() {
-  modal.style.display = 'flex';
-});
-
-closeModalBtn.addEventListener('click', function() {
-  modal.style.display = 'none';
-});
-
-window.addEventListener('click', function(event) {
-  if (event.target == modal) {
-    modal.style.display = 'none';
-  }
-});
+}
 
 function showCity(userCity) {
   const orase = [
