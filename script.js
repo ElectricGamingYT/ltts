@@ -46,11 +46,11 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 // Lista locațiilor predefinite cu coordonate
 const oraseCuCoordonate = [
-  { nume: 'Ploiești', lat: 44.939088, lon: 25.991130, mesaj: 'Te afli la Liceul Toma Socolescu din Ploiești!', raza: 1 },
-  { nume: 'Cabana Dichiu', lat: 45.34746, lon: 25.42748, mesaj: 'Te afli la Cabana Dichiu, un loc minunat pentru drumeții!', raza: 2 },
-  { nume: 'Lacul Bolboci', lat: 45.3906, lon: 25.4263, mesaj: 'Te afli la Lacul Bolboci, o destinație pitorească în Munții Bucegi!', raza: 1 },
-  { nume: 'Pestera Ialomiței', lat: 45.393286, lon: 25.436873, mesaj: 'Te afli la Lacul Bolboci, o destinație pitorească în Munții Bucegi!', raza: 1 },
-  { nume: 'Lacul Bolboci', lat: 45.290959, lon: 25.507908, mesaj: 'Te afli la Lacul Bolboci, o destinație pitorească în Munții Bucegi!', raza: 1 }
+  { nume: 'Ploiești', lat: 44.939088, lon: 25.991130, mesaj: 'Ploiești este municipiul de reședință al județului Prahova, Muntenia, România. Este situat la 60 km nord de București, pe coordonatele de 26°1'48" longitudine estică și 44°56'24" latitudine nordică și are o suprafață de aproape 60 km².', raza: 1 },
+  { nume: 'Cabana Dichiu', lat: 45.34746, lon: 25.42748, mesaj: 'Cabana Dichiu este situată în Munții Bucegi, județul Dâmbovița, România. Aceasta se află la o altitudine de aproximativ 1.550 de metri, pe coordonatele de 25°25'45" longitudine estică și 45°18'30" latitudine nordică. Este un punct de plecare ideal pentru drumeții în Munții Bucegi, oferind acces ușor către diverse trasee montane.', raza: 2 },
+  { nume: 'Lacul Bolboci', lat: 45.3906, lon: 25.4263, mesaj: 'Lacul Bolboci este un lac de acumulare din Munții Bucegi, județul Dâmbovița, România. Situat la o altitudine de 1.438 de metri, pe coordonatele de 25°27'50" longitudine estică și 45°22'05" latitudine nordică, lacul oferă un peisaj spectaculos și este cunoscut ca "Marea din Bucegi".', raza: 1 },
+  { nume: 'Pestera Ialomiței', lat: 45.393286, lon: 25.436873, mesaj: 'Peștera Ialomiței se află în Munții Bucegi, județul Dâmbovița, România, la o altitudine de 1.530 de metri. Peștera este situată pe coordonatele de 25°26'35" longitudine estică și 45°22'45" latitudine nordică și este una dintre cele mai vizitate atracții turistice din zonă datorită frumuseții sale naturale și a bogățiilor geologice.', raza: 1 },
+  { nume: 'Lacul Bolboci', lat: 45.290959, lon: 25.507908, mesaj: 'Pensiunea Valea Șipotului este situată în comuna Moroeni, județul Dâmbovița, România. Amplasată pe coordonatele de 25°26'10" longitudine estică și 45°19'20" latitudine nordică, pensiunea oferă cazare într-un cadru natural liniștit, aproape de pădurile Munților Bucegi, fiind un loc perfect pentru relaxare și drumeții.', raza: 1 }
 ];
 
 // Găsește orașul pe baza coordonatelor și distanței
