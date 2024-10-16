@@ -6,12 +6,15 @@ const cityBox = document.getElementById('city-box');
 const content = document.getElementById('content');
 const loadingCircle = document.getElementById('loading-circle');
 
+// Adaugă verificări în consolă pentru debugging
 whereAmIBtn.addEventListener('click', function() {
+  console.log("Buton 'Unde mă aflu' a fost apăsat."); // Verificăm dacă evenimentul este declanșat
   whereAmIBtn.style.display = 'none';
   loadingCircle.style.display = 'block';
 
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(success, handleError, { timeout: 10000 });
+    console.log("Geolocația este suportată. Se solicită locația...");
+    navigator.geolocation.getCurrentPosition(success, handleError, { timeout: 10000, enableHighAccuracy: true });
   } else {
     alert('Geolocația nu este suportată de acest browser.');
     loadingCircle.style.display = 'none';
@@ -28,6 +31,7 @@ closeModalBtn.addEventListener('click', function() {
 
 function handleError(error) {
   let errorMessage = 'Eroare necunoscută la obținerea locației.';
+  console.error("Cod eroare geolocație: ", error.code); // Debugging pentru erori
   switch (error.code) {
     case error.PERMISSION_DENIED:
       errorMessage = 'Accesul la locație a fost refuzat.';
@@ -69,13 +73,16 @@ const oraseCuCoordonate = [
 function findCityByCoords(lat, lon) {
   return oraseCuCoordonate.find(oras => {
     const dist = calculateDistance(lat, lon, oras.lat, oras.lon);
+    console.log(`Distanța calculată: ${dist} km de la ${oras.nume}`); // Log pentru distanță
     return dist <= oras.raza;
   });
 }
 
 function success(position) {
+  console.log("Locația a fost detectată cu succes.");
   const lat = position.coords.latitude;
   const lon = position.coords.longitude;
+  console.log(`Coordonate GPS: Lat = ${lat}, Lon = ${lon}`); // Afișăm coordonatele pentru debugging
 
   const orasGasit = findCityByCoords(lat, lon);
 
