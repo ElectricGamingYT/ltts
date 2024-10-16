@@ -1,30 +1,31 @@
 const modal = document.getElementById('myModal');
 const openModalBtn = document.getElementById('btn-verifica');
 const whereAmIBtn = document.getElementById('btn-mai-multe');
+const startGameBtn = document.getElementById('btn-incepe-jocul');
 const closeModalBtn = document.getElementById('closeModal');
 const cityBox = document.getElementById('city-box');
 const content = document.getElementById('content');
 const loadingCircle = document.getElementById('loading-circle');
 
-// Event for the "Where Am I" button
+// Eveniment pentru butonul "Unde ma aflu"
 whereAmIBtn.addEventListener('click', function() {
-  whereAmIBtn.style.display = 'none'; // Hide "Where Am I" button
-  loadingCircle.style.display = 'block'; // Show loading circle
+  whereAmIBtn.style.display = 'none'; // Ascunde butonul "Unde ma aflu"
+  loadingCircle.style.display = 'block'; // Arată cercul de încărcare
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(success, error);
   } else {
-    alert('Geolocation is not supported by this browser.');
-    getIpLocation(); // Fallback to IP location
+    alert('Geolocation nu este suportat de acest browser.');
+    getIpLocation(); // fallback to IP location
   }
 });
 
 openModalBtn.addEventListener('click', function() {
-  modal.style.display = 'flex'; // Open modal
+  modal.style.display = 'flex'; // Deschide modalul
 });
 
 closeModalBtn.addEventListener('click', function() {
-  modal.style.display = 'none'; // Close modal
+  modal.style.display = 'none'; // Închide modalul
 });
 
 function success(position) {
@@ -32,49 +33,33 @@ function success(position) {
   const lon = position.coords.longitude;
 
   fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       const userCity = data.address.city || data.address.town || data.address.village;
       showCity(userCity);
     })
     .catch(error => {
-      console.error('Error fetching location:', error);
-      cityBox.textContent = "Error retrieving location.";
+      cityBox.textContent = "Eroare la obținerea locației.";
       cityBox.style.display = 'block';
-    })
-    .finally(() => {
-      loadingCircle.style.display = 'none'; // Hide loading circle
+      loadingCircle.style.display = 'none';
     });
 }
 
 function error() {
-  console.warn('Geolocation failed.');
-  getIpLocation(); // Fallback to IP location if GPS fails
+  getIpLocation(); // fallback la locația IP dacă GPS-ul eșuează
 }
 
 function getIpLocation() {
-  fetch('https://ipinfo.io?token=0fcee6375a1282') // Replace with your API key
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
+  fetch('https://ipinfo.io?token=0fcee6375a1282') // Înlocuiește cu cheia ta API
+    .then(response => response.json())
     .then(data => {
       const userCity = data.city;
       showCity(userCity);
     })
     .catch(() => {
-      cityBox.textContent = "Error retrieving location.";
+      cityBox.textContent = "Eroare la obținerea locației.";
       cityBox.style.display = 'block';
-    })
-    .finally(() => {
-      loadingCircle.style.display = 'none'; // Hide loading circle
+      loadingCircle.style.display = 'none';
     });
 }
 
@@ -94,7 +79,7 @@ function showCity(userCity) {
       cityBox.textContent = "Te afli în orașul: " + oras.nume;
       content.textContent = oras.mesaj;
       cityBox.style.display = 'block';
-      openModalBtn.style.display = 'inline-block'; // Show "Want to know more" button
+      openModalBtn.style.display = 'inline-block'; // Butonul "Vreau să știu mai mult" devine vizibil
       foundCity = true;
       break;
     }
@@ -105,57 +90,73 @@ function showCity(userCity) {
     cityBox.style.display = 'block';
     openModalBtn.style.display = 'none';
   }
+
+  loadingCircle.style.display = 'none';
 }
 
 function normalizeText(text) {
   return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-function showLocationByCoordinates(userLat, userLon) {
-  const locations = [
-    { lat: 44.5600, lon: 25.564100, name: 'Cabana Dichiu', mesaj: 'Nu ai nimic de aflat despre acest oraș.', radius: 5000 },
-    { lat: 44.961281, lon: 25.865000, name: 'Baicoi', mesaj: 'Bucureștiul este capitala României, vibrant și aglomerat!', radius: 100 }
+
+function success(position) {
+  const lat = position.coords.latitude;
+  const lon = position.coords.longitude;
+
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(response => response.json())
+    .then(data => {
+      const userCity = data.address.city || data.address.town || data.address.village;
+      checkCustomLocations(lat, lon); // Verifică locațiile custom
+      showCity(userCity);
+    })
+    .catch(error => {
+      cityBox.textContent = "Eroare la obținerea locației.";
+      cityBox.style.display = 'block';
+      loadingCircle.style.display = 'none';
+    });
+}
+
+function checkCustomLocations(lat, lon) {
+  const customLocations = [
+    {nume: 'Cabana Dichiu', lat: 44.5600, lon: 25.5941, raza: 1000, mesaj: 'Ești în apropierea Cabanei Dichiu!'}
+    // Adaugă alte locații personalizate aici
   ];
 
-  let foundLocation = false;
-
-  for (const loc of locations) {
-    const distance = haversineDistance(userLat, userLon, loc.lat, loc.lon);
+  let foundCustomLocation = false;
+  
+  for (const loc of customLocations) {
+    const distance = calculateDistance(lat, lon, loc.lat, loc.lon);
     
-    if (distance <= loc.radius / 1000) { // Compara distanța cu raza în km (loc.radius este în metri, deci împărțim la 1000)
-      cityBox.textContent = "Te afli în apropierea locației: " + loc.name;
+    if (distance <= loc.raza) {
+      cityBox.textContent = "Te afli în apropierea locației: " + loc.nume;
       content.textContent = loc.mesaj;
       cityBox.style.display = 'block';
       openModalBtn.style.display = 'inline-block'; // Butonul "Vreau să știu mai mult" devine vizibil
-      foundLocation = true;
+      foundCustomLocation = true;
       break;
     }
   }
 
-  if (!foundLocation) {
-    cityBox.textContent = "Te afli într-o locație necunoscută.";
-    cityBox.style.display = 'block';
-    openModalBtn.style.display = 'none';
+  if (!foundCustomLocation) {
+    openModalBtn.style.display = 'none'; // Ascunde butonul dacă nu e locație custom
   }
 
   loadingCircle.style.display = 'none';
 }
 
-// Funcție pentru a calcula distanța haversine între două puncte geografice
-function haversineDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371; // raza Pământului în kilometri
-  const dLat = degreesToRadians(lat2 - lat1);
-  const dLon = degreesToRadians(lon2 - lon1);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c; // Distanța în kilometri
-  return distance;
-}
+// Funcție pentru calcularea distanței dintre două coordonate geografice (în metri)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371e3; // Raza Pământului în metri
+  const φ1 = lat1 * Math.PI/180; // Convertire în radiani
+  const φ2 = lat2 * Math.PI/180;
+  const Δφ = (lat2 - lat1) * Math.PI/180;
+  const Δλ = (lon2 - lon1) * Math.PI/180;
 
-// Conversie din grade în radiani
-function degreesToRadians(degrees) {
-  return degrees * (Math.PI / 180);
+  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+  return R * c; // Distanța în metri
 }
