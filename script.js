@@ -1,65 +1,80 @@
 const modal = document.getElementById('myModal');
 const openModalBtn = document.getElementById('btn-verifica');
 const whereAmIBtn = document.getElementById('btn-mai-multe');
-const startGameBtn = document.getElementById('btn-incepe-jocul');
 const closeModalBtn = document.getElementById('closeModal');
 const cityBox = document.getElementById('city-box');
 const content = document.getElementById('content');
 const loadingCircle = document.getElementById('loading-circle');
 
-// Eveniment pentru butonul "Unde ma aflu"
+// Event for the "Where Am I" button
 whereAmIBtn.addEventListener('click', function() {
-  whereAmIBtn.style.display = 'none'; // Ascunde butonul "Unde ma aflu"
-  loadingCircle.style.display = 'block'; // Arată cercul de încărcare
+  whereAmIBtn.style.display = 'none'; // Hide "Where Am I" button
+  loadingCircle.style.display = 'block'; // Show loading circle
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(success, error);
   } else {
-    alert('Geolocation nu este suportat de acest browser.');
-    getIpLocation(); // fallback to IP location
+    alert('Geolocation is not supported by this browser.');
+    getIpLocation(); // Fallback to IP location
   }
 });
 
 openModalBtn.addEventListener('click', function() {
-  modal.style.display = 'flex'; // Deschide modalul
+  modal.style.display = 'flex'; // Open modal
 });
 
 closeModalBtn.addEventListener('click', function() {
-  modal.style.display = 'none'; // Închide modalul
+  modal.style.display = 'none'; // Close modal
 });
 
 function success(position) {
   const lat = position.coords.latitude;
   const lon = position.coords.longitude;
 
-  fetch(https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon})
-    .then(response => response.json())
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
       const userCity = data.address.city || data.address.town || data.address.village;
       showCity(userCity);
     })
     .catch(error => {
-      cityBox.textContent = "Eroare la obținerea locației.";
+      console.error('Error fetching location:', error);
+      cityBox.textContent = "Error retrieving location.";
       cityBox.style.display = 'block';
-      loadingCircle.style.display = 'none';
+    })
+    .finally(() => {
+      loadingCircle.style.display = 'none'; // Hide loading circle
     });
 }
 
 function error() {
-  getIpLocation(); // fallback la locația IP dacă GPS-ul eșuează
+  console.warn('Geolocation failed.');
+  getIpLocation(); // Fallback to IP location if GPS fails
 }
 
 function getIpLocation() {
-  fetch('https://ipinfo.io?token=0fcee6375a1282') // Înlocuiește cu cheia ta API
-    .then(response => response.json())
+  fetch('https://ipinfo.io?token=0fcee6375a1282') // Replace with your API key
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then(data => {
       const userCity = data.city;
       showCity(userCity);
     })
     .catch(() => {
-      cityBox.textContent = "Eroare la obținerea locației.";
+      cityBox.textContent = "Error retrieving location.";
       cityBox.style.display = 'block';
-      loadingCircle.style.display = 'none';
+    })
+    .finally(() => {
+      loadingCircle.style.display = 'none'; // Hide loading circle
     });
 }
 
@@ -79,7 +94,7 @@ function showCity(userCity) {
       cityBox.textContent = "Te afli în orașul: " + oras.nume;
       content.textContent = oras.mesaj;
       cityBox.style.display = 'block';
-      openModalBtn.style.display = 'inline-block'; // Butonul "Vreau să știu mai mult" devine vizibil
+      openModalBtn.style.display = 'inline-block'; // Show "Want to know more" button
       foundCity = true;
       break;
     }
@@ -90,8 +105,6 @@ function showCity(userCity) {
     cityBox.style.display = 'block';
     openModalBtn.style.display = 'none';
   }
-
-  loadingCircle.style.display = 'none';
 }
 
 function normalizeText(text) {
